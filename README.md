@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+### What is AWS?
+- Amazon Simple Storage Service (AWS S3) is highly available, scalable, secure, durable cloud storage where we can store millions of data with very minimal rates.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[AWS hosted link](http://signup-demo-prac-9.s3-website-us-west-2.amazonaws.com/)
 
-## Available Scripts
+### Steps to host react app on S3
+1. First create bucket
+![Screenshot from 2022-04-14 17-28-15](https://user-images.githubusercontent.com/68768212/163386435-0286e73f-6b5c-40f3-815d-1252e8e01a3f.png)
 
-In the project directory, you can run:
+2. Unblock all Public Access
 
-### `npm start`
+![Screenshot from 2022-04-14 17-31-28](https://user-images.githubusercontent.com/68768212/163386684-93eae73c-acdc-4866-af80-dc92ff5674eb.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. And Enable Static website hosting
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![Screenshot from 2022-04-14 17-32-49](https://user-images.githubusercontent.com/68768212/163386827-3318aa92-136a-48be-ba5c-ee4393b51736.png)
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. Add Action in Git repo.
+```
+name: signup-demo-prac9
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Build React App
+        run: npm install && npm run build
+      - name: Deploy app build to S3 bucket
+        run: aws s3 sync ./build/ s3://signup-demo-prac-9 --delete
 
-### `npm run build`
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+5. And add AWS credentials as Secrets of the action
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![Screenshot from 2022-04-14 17-37-50](https://user-images.githubusercontent.com/68768212/163387888-3459811f-e65f-4be8-a3da-0b1074abccd0.png)
